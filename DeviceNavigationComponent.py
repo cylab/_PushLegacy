@@ -48,12 +48,14 @@ class DeviceNavigationComponent(CompoundComponent):
         self._device_list.set_state_buttons(state_buttons)
 
     def set_exit_button(self, exit_button):
-        raise not exit_button or exit_button.is_momentary() or AssertionError
+        if not (not exit_button or exit_button.is_momentary()):
+            raise AssertionError
         self._on_exit_value.subject = exit_button
         self._update_exit_button()
 
     def set_enter_button(self, enter_button):
-        raise not enter_button or enter_button.is_momentary() or AssertionError
+        if not (not enter_button or enter_button.is_momentary()):
+            raise AssertionError
         self._on_enter_value.subject = enter_button
         self._update_enter_button()
 

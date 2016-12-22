@@ -208,7 +208,8 @@ class InstrumentScalesComponent(CompoundComponent):
         self._modus_list.encoders.set_control_element([encoders[0]] if encoders else [])
 
     def set_key_center_buttons(self, buttons):
-        raise not buttons or len(buttons) == 12 or AssertionError
+        if not (not buttons or len(buttons) == 12):
+            raise AssertionError
         buttons = buttons or []
         self._key_center_buttons = buttons
         self._on_key_center_button_value.replace_subjects(buttons)
@@ -468,7 +469,8 @@ class InstrumentComponent(CompoundComponent, Slideable, Messenger):
         self._touch_slider.set_page_strip(strip)
 
     def set_scales_toggle_button(self, button):
-        raise button is None or button.is_momentary() or AssertionError
+        if not (button is None or button.is_momentary()):
+            raise AssertionError
         self._scales_menu.set_toggle_button(button)
 
     def set_octave_up_button(self, button):

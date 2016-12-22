@@ -166,10 +166,11 @@ class NoteEditorComponent(CompoundComponent, Subject):
     def set_selected_page_point(self, point):
         if not self.can_change_page:
             raise AssertionError
-            self._selected_page_point = point
-            index = int(point / self.page_length) if self.page_length != 0 else 0
-            self._page_index = index != self._page_index and index
-            self._on_clip_notes_changed()
+        self._selected_page_point = point
+        index = int(point / self.page_length) if self.page_length != 0 else 0
+        if index != self._page_index:
+            self._page_index = index
+        self._on_clip_notes_changed()
 
     def _get_modify_all_notes_enabled(self):
         return self._modify_all_notes_enabled
@@ -311,8 +312,10 @@ class NoteEditorComponent(CompoundComponent, Subject):
 
     def _get_step_start_time(self, x, y):
         """ returns step starttime in beats, based on step coordinates """
-        raise in_range(x, 0, self._width) or AssertionError
-        raise in_range(y, 0, self._height) or AssertionError
+        if not (in_range(x, 0, self._width)):
+            raise AssertionError
+        if not (in_range(y, 0, self._height)):
+            raise AssertionError
         page_time = self._page_index * self._get_step_count() * self._triplet_factor
         step_time = x + y * self._width * self._triplet_factor
         return (page_time + step_time) * self._get_step_length()

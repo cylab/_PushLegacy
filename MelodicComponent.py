@@ -64,7 +64,8 @@ class MelodicComponent(ModesComponent, Messenger):
     prev_loop_page_button = forward_property('_loop_selector')('prev_page_button')
 
     def set_note_editor_matrices(self, matrices):
-        raise not matrices or len(matrices) <= NUM_NOTE_EDITORS or AssertionError
+        if not (not matrices or len(matrices) <= NUM_NOTE_EDITORS):
+            raise AssertionError
         self._matrices = matrices
         for editor, matrix in map(None, self._note_editors, matrices or []):
             if editor:

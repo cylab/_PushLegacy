@@ -214,7 +214,8 @@ class FullBrowserModel(BrowserModel):
             self._num_contents += 1
             content = self._contents[self._num_contents - 1]
         else:
-            raise self._num_contents == len(self._contents) or AssertionError
+            if not (self._num_contents == len(self._contents)):
+                raise AssertionError
             content = self.make_content_list()
             level = len(self._contents)
             slot = self.register_slot(content, partial(self._on_item_activated, level), 'item_activated')
@@ -223,7 +224,8 @@ class FullBrowserModel(BrowserModel):
         return content
 
     def _pop_content_list(self):
-        raise self._num_contents > 1 or AssertionError
+        if not (self._num_contents > 1):
+            raise AssertionError
         self._num_contents -= 1
 
     def _fit_content_lists(self, requested_lists):
@@ -231,7 +233,8 @@ class FullBrowserModel(BrowserModel):
         Ensures that there are exactly 'request_lists' number of
         content lists. Returns whether a change was needed or not.
         """
-        raise requested_lists > 0 or AssertionError
+        if not(requested_lists > 0):
+            raise AssertionError
         if requested_lists != self._num_contents:
             while requested_lists < self._num_contents:
                 self._pop_content_list()
@@ -249,7 +252,8 @@ class FullBrowserModel(BrowserModel):
             _, slot = self._contents.pop()
             self.disconnect_disconnectable(slot)
 
-        raise self._num_contents == len(self._contents) or AssertionError
+        if not(self._num_contents == len(self._contents)):
+            raise AssertionError
 
     def _on_item_activated(self, level):
         old_num_contents = self._num_contents
@@ -296,7 +300,8 @@ class PathBrowserQuery(BrowserQuery):
 
     def __init__(self, path = tuple(), *a, **k):
         super(PathBrowserQuery, self).__init__(*a, **k)
-        raise path or AssertionError
+        if not path:
+            raise AssertionError
         self.path = path
 
     def query(self, browser):

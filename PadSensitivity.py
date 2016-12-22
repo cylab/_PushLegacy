@@ -54,7 +54,8 @@ class PadUpdateComponent(ControlSurfaceComponent):
     """
 
     def __init__(self, all_pads = tuple(), parameter_sender = nop, default_profile = PadParameters(), update_delay = 0, *a, **k):
-        raise find_if(lambda pad: pad < 0 or pad > 63, all_pads or []) == None or AssertionError
+        if not (find_if(lambda pad: pad < 0 or pad > 63, all_pads or []) == None):
+            raise AssertionError
         super(PadUpdateComponent, self).__init__(*a, **k)
         self.parameter_sender = parameter_sender
         self._all_pads = set(all_pads)
@@ -77,12 +78,13 @@ class PadUpdateComponent(ControlSurfaceComponent):
     def set_pad(self, pad, new_profile):
         if not pad in self._all_pads:
             raise AssertionError
-            raise new_profile in self._profile_count or AssertionError
-            old_profile = self._profile_for[pad]
-            old_profile != new_profile and self._add_modified_pads([pad])
-            self._profile_for[pad] = new_profile
-            self._profile_count[old_profile] -= 1
-            self._profile_count[new_profile] += 1
+        if not (new_profile in self._profile_count):
+            raise AssertionError
+        old_profile = self._profile_for[pad]
+        old_profile != new_profile and self._add_modified_pads([pad])
+        self._profile_for[pad] = new_profile
+        self._profile_count[old_profile] -= 1
+        self._profile_count[new_profile] += 1
 
     def update(self):
         super(PadUpdateComponent, self).update()
@@ -92,19 +94,19 @@ class PadUpdateComponent(ControlSurfaceComponent):
     def _update_modified(self):
         if not (self.is_enabled() and self._modified_pads and sum(self._profile_count.itervalues()) == len(self._all_pads)):
             raise AssertionError
-            largest_profile, largest_count = max(self._profile_count.iteritems(), key=second)
-            if len(self._all_pads) - largest_count + 1 < len(self._modified_pads):
-                self.parameter_sender(self._profiles[largest_profile])
-                for pad in self._all_pads:
-                    profile = self._profile_for[pad]
-                    if profile != largest_profile:
-                        self.parameter_sender(self._profiles[profile], pad)
+        largest_profile, largest_count = max(self._profile_count.iteritems(), key=second)
+        if len(self._all_pads) - largest_count + 1 < len(self._modified_pads):
+            self.parameter_sender(self._profiles[largest_profile])
+            for pad in self._all_pads:
+                profile = self._profile_for[pad]
+                if profile != largest_profile:
+                    self.parameter_sender(self._profiles[profile], pad)
 
-            else:
-                for pad in self._modified_pads:
-                    self.parameter_sender(self._profiles[self._profile_for[pad]], pad)
+        else:
+            for pad in self._modified_pads:
+                self.parameter_sender(self._profiles[self._profile_for[pad]], pad)
 
-            self._modified_pads.clear()
+        self._modified_pads.clear()
         self._update_task.kill()
 
     def _add_modified_pads(self, pads):

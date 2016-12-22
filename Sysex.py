@@ -22,7 +22,8 @@ PAD_SENSITIVITY_PREFIX = START + (90, 0, 33)
 PAD_PARAMETER_PREFIX = START + (71, 0, 9)
 
 def make_pad_parameter_message(aftertouch_threshold = consts.DEFAULT_AFTERTOUCH_THRESHOLD, peak_sampling_time = consts.DEFAULT_PEAK_SAMPLING_TIME, aftertouch_gate_time = consts.DEFAULT_AFTERTOUCH_GATE_TIME):
-    raise 0 <= aftertouch_threshold < 128 or AssertionError
+    if not (0 <= aftertouch_threshold < 128):
+        raise AssertionError
     return to_bytes(peak_sampling_time, 4) + to_bytes(aftertouch_gate_time, 4) + (aftertouch_threshold,)
 
 
@@ -31,7 +32,8 @@ def to_bytes(number, size):
     turns the given value into tuple of 4bit bytes,
     ordered from most significant to least significant byte
     """
-    raise in_range(number, 0, 1 << size * 4) or AssertionError
+    if not (in_range(number, 0, 1 << size * 4)):
+        raise AssertionError
     return tuple([ number >> offset & 15 for offset in xrange((size - 1) * 4, -1, -4) ])
 
 

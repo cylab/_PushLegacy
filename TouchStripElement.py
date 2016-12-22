@@ -159,7 +159,8 @@ class TouchStripElement(InputControlElement, SlotManager):
         self._behaviour.handle_value(value, notify)
 
     def turn_on_index(self, index, on_state = STATE_FULL, off_state = STATE_OFF):
-        raise in_range(index, 0, self.STATE_COUNT) or AssertionError
+        if not (in_range(index, 0, self.STATE_COUNT)):
+            raise AssertionError
         states = [off_state] * self.STATE_COUNT
         states[index] = on_state
         self.send_state(states)
@@ -170,6 +171,6 @@ class TouchStripElement(InputControlElement, SlotManager):
     def send_state(self, state):
         if not (self._behaviour.mode == TouchStripModes.CUSTOM_FREE and len(state) == self.STATE_COUNT):
             raise AssertionError
-            group_size = 3
-            bytes = [ reduce(lambda byte, (i, state): byte | state << 2 * i, enumerate(state_group), 0) for state_group in group(state, group_size) ]
-            self._send_midi(Sysex.START + (100, 0, 8) + tuple(bytes) + (247,))
+        group_size = 3
+        bytes = [ reduce(lambda byte, (i, state): byte | state << 2 * i, enumerate(state_group), 0) for state_group in group(state, group_size) ]
+        self._send_midi(Sysex.START + (100, 0, 8) + tuple(bytes) + (247,))

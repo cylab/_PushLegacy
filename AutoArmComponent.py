@@ -82,6 +82,8 @@ class AutoArmComponent(CompoundComponent):
         self._on_tracks_changed.subject = self.song()
         self._on_exclusive_arm_changed.subject = self.song()
         self._on_tracks_changed()
+        self._on_selected_track_changed.subject = self.song().view
+        return
 
     notification_layer = forward_property('_notification')('message_box_layer')
 
@@ -89,7 +91,8 @@ class AutoArmComponent(CompoundComponent):
         if not self._auto_arm_restore_behaviour:
             self._auto_arm_restore_behaviour = mixin(AutoArmRestoreBehaviour, *extra_classes)(auto_arm=self, **extra_params)
         else:
-            raise not extra_params and not extra_classes or AssertionError
+            if extra_params and not extra_classes:
+                raise AssertionError
         return self._auto_arm_restore_behaviour
 
     def track_can_be_armed(self, track):
@@ -98,7 +101,8 @@ class AutoArmComponent(CompoundComponent):
     def can_auto_arm_track(self, track):
         return self.track_can_be_armed(track)
 
-    def on_selected_track_changed(self):
+    @subject_slot('selected_track')
+    def _on_selected_track_changed(self):
         self.update()
 
     def _update_notification(self):
@@ -110,14 +114,15 @@ class AutoArmComponent(CompoundComponent):
     def update(self):
         super(AutoArmComponent, self).update()
         song = self.song()
-        if self.is_enabled():
-            enabled = not self.needs_restore_auto_arm
-            selected_track = song.view.selected_track
-            for track in song.tracks:
-                if self.track_can_be_armed(track):
-                    track.implicit_arm = enabled and selected_track == track and self.can_auto_arm_track(track)
+        enabled = self.is_enabled() and not self.needs_restore_auto_arm
+        selected_track = song.view.selected_track
+        for track in song.tracks:
+            if self.track_can_be_armed(track):
+                track.implicit_arm = enabled and selected_track == track and self.can_auto_arm_track(track)
 
-            self._auto_arm_restore_behaviour and self._auto_arm_restore_behaviour.update()
+
+        if self._auto_arm_restore_behaviour:
+            self._auto_arm_restore_behaviour.update()
         self._update_notification()
 
     def restore_auto_arm(self):

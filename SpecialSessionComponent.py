@@ -15,7 +15,8 @@ class DuplicateSceneComponent(ControlSurfaceComponent, Messenger):
 
     def __init__(self, session = None, *a, **k):
         super(DuplicateSceneComponent, self).__init__(*a, **k)
-        raise session or AssertionError
+        if not (session):
+            raise AssertionError
         self._session = session
         self._scene_buttons = None
 

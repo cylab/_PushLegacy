@@ -17,7 +17,8 @@ class TouchEncoderElement(TouchEncoderElementBase, SlotManager):
 
     def __init__(self, msg_type, channel, identifier, map_mode, undo_step_handler = None, delete_handler = None, touch_button = None, *a, **k):
         super(TouchEncoderElement, self).__init__(msg_type, channel, identifier, map_mode, *a, **k)
-        raise touch_button is not None or AssertionError
+        if not (touch_button is not None):
+            raise AssertionError
         self.touch_button = touch_button
         self._trigger_undo_step = False
         self._undo_step_open = False

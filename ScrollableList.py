@@ -92,7 +92,8 @@ class ScrollableList(Subject, Scrollable):
         return self._num_visible_items
 
     def _set_num_visible_items(self, num_items):
-        raise num_items >= 0 or AssertionError
+        if not (num_items >= 0):
+            raise AssertionError
         self._num_visible_items = num_items
         self._normalize_offset(self._selected_item_index)
 
@@ -110,9 +111,9 @@ class ScrollableList(Subject, Scrollable):
         """
         if not (index != self.selected_item_index and index >= 0 and index < len(self._items) and self.selected_item_index != -1):
             raise AssertionError
-            self._offset = clamp(index - offset, 0, len(self._items))
-            self._normalize_offset(index)
-            self._do_set_selected_item_index(index)
+        self._offset = clamp(index - offset, 0, len(self._items))
+        self._normalize_offset(index)
+        self._do_set_selected_item_index(index)
 
     def select_item_index_with_border(self, index, border_size):
         """
@@ -151,8 +152,8 @@ class ScrollableList(Subject, Scrollable):
     def _set_selected_item_index(self, index):
         if not (index >= 0 and index < len(self._items) and self.selected_item_index != -1):
             raise AssertionError
-            self._normalize_offset(index)
-            self._do_set_selected_item_index(index)
+        self._normalize_offset(index)
+        self._do_set_selected_item_index(index)
 
     def _get_selected_item_index(self):
         return self._selected_item_index

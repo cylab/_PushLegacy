@@ -38,12 +38,14 @@ class HardwareIdentity(NamedTuple):
 
     @property
     def major_version(self):
-        raise len(self.firmware) == 4 or AssertionError
+        if not (len(self.firmware) == 4):
+            raise AssertionError
         return self.firmware[0] * 10 + self.firmware[1]
 
     @property
     def minor_version(self):
-        raise len(self.firmware) == 4 or AssertionError
+        if not (len(self.firmware) == 4):
+            raise AssertionError
         return self.firmware[2] * 10 + self.firmware[3]
 
 
@@ -140,8 +142,10 @@ class HandshakeComponent(ControlSurfaceComponent):
 class MinimumFirmwareVersionElement(ToggleElement):
 
     def __init__(self, major_version = 0, minor_version = 0, wrapped_element = None, handshake_component = None, *a, **k):
-        raise wrapped_element is not None or AssertionError
-        raise handshake_component is not None or AssertionError
+        if not (wrapped_element is not None):
+            raise AssertionError
+        if not (handshake_component is not None):
+            raise AssertionError
         super(MinimumFirmwareVersionElement, self).__init__(on_control=wrapped_element, off_control=None, wrapped_control=wrapped_element, *a, **k)
         self._major_version = major_version
         self._minor_version = minor_version

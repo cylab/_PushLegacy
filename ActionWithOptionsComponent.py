@@ -91,7 +91,8 @@ class OptionsComponent(ControlSurfaceComponent):
         return self._selected_option
 
     def _set_selected_option(self, selected_option):
-        raise in_range(selected_option, 0, len(self.option_names)) or selected_option is None or AssertionError
+        if not (in_range(selected_option, 0, len(self.option_names)) or selected_option is None):
+            raise AssertionError
         self._selected_option = selected_option
         self._update_select_buttons()
         self._update_data_sources()

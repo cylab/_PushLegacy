@@ -8,7 +8,7 @@ class PlayheadComponent(ControlSurfaceComponent):
     Updates the contents of the Live playhead object.
     """
 
-    def __init__(self, paginator = None, grid_resolution = None, follower = None, notes = range(8), triplet_notes = range(6), *a, **k):
+    def __init__(self, paginator = None, grid_resolution = None, follower = None, notes = range(8), triplet_notes = range(6), feedback_channels = [], *a, **k):
         super(PlayheadComponent, self).__init__(*a, **k)
         self._playhead = None
         self._clip = None
@@ -17,6 +17,7 @@ class PlayheadComponent(ControlSurfaceComponent):
         self._follower = follower
         self._notes = tuple(notes)
         self._triplet_notes = tuple(triplet_notes)
+        self._feedback_channels = feedback_channels
         self._on_page_changed.subject = self._paginator
         self._on_grid_resolution_changed.subject = self._grid_resolution
         self._on_follower_is_following_changed.subject = self._follower
@@ -60,6 +61,7 @@ class PlayheadComponent(ControlSurfaceComponent):
             else:
                 track = None
             self._playhead.track = track
+            self._playhead.feedback_channels = self._feedback_channels
             if track:
                 is_triplet = self._grid_resolution.clip_grid[1]
                 notes = self._triplet_notes if is_triplet else self._notes

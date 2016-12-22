@@ -75,9 +75,10 @@ class ScrollableListComponent(ControlSurfaceComponent):
     def _set_selected_option(self, selected_option):
         if not (selected_option != self._selected_option and (selected_option == None or in_range(selected_option, 0, self._option_names))):
             raise AssertionError
-            self._selected_option = selected_option
-            self.notify_change_option(selected_option)
-            self.update()
+        self._selected_option = selected_option
+        self.notify_change_option(selected_option)
+        self.update()
+        return
 
     selected_option = property(_get_selected_option, _set_selected_option)
 

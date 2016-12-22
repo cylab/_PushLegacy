@@ -35,7 +35,8 @@ class ConfigurableButtonElement(ButtonElement):
         self.states = dict(self.default_states)
         self.is_rgb = is_rgb
         self._force_next_value = False
-        self.set_channel(NON_FEEDBACK_CHANNEL)
+        # TODO check this: self.set_channel(NON_FEEDBACK_CHANNEL)
+        return
 
     @property
     def _on_value(self):
@@ -63,7 +64,7 @@ class ConfigurableButtonElement(ButtonElement):
         self.states = dict(self.default_states)
         self.set_light('DefaultButton.Disabled')
         self.set_identifier(self._original_identifier)
-        self.set_channel(NON_FEEDBACK_CHANNEL)
+        # TODO check this: self.set_channel(NON_FEEDBACK_CHANNEL)
         self.set_enabled(True)
 
     def reset_state(self):
@@ -111,7 +112,8 @@ class PadButtonElement(ConfigurableButtonElement):
     """
 
     def __init__(self, pad_id = None, pad_sensitivity_update = None, *a, **k):
-        raise pad_id is not None or AssertionError
+        if pad_id is None:
+            raise AssertionError
         super(PadButtonElement, self).__init__(*a, **k)
         self._sensitivity_profile = 'default'
         self._pad_id = pad_id

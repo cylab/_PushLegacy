@@ -73,7 +73,8 @@ class UserComponent(ActionWithSettingsComponent):
 
     def __init__(self, value_control = None, *a, **k):
         super(UserComponent, self).__init__(*a, **k)
-        raise value_control != None or AssertionError
+        if not (value_control != None):
+            raise AssertionError
         self._settings = self.register_component(UserSettingsComponent())
         self._settings.set_enabled(False)
         self._value_control = value_control

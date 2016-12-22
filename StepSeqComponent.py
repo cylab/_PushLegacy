@@ -95,12 +95,18 @@ class StepSeqComponent(CompoundComponent):
 
     def __init__(self, clip_creator = None, skin = None, grid_resolution = None, note_editor_settings = None, *a, **k):
         super(StepSeqComponent, self).__init__(*a, **k)
-        raise clip_creator or AssertionError
+        if not (clip_creator):
+            raise AssertionError
         if not skin:
             raise AssertionError
-            self._grid_resolution = grid_resolution
-            note_editor_settings and self.register_component(note_editor_settings)
-        self._note_editor, self._loop_selector, self._big_loop_selector, self._drum_group = self.register_components(NoteEditorComponent(settings_mode=note_editor_settings, clip_creator=clip_creator, grid_resolution=self._grid_resolution), LoopSelectorComponent(clip_creator=clip_creator), LoopSelectorComponent(clip_creator=clip_creator, measure_length=2.0), DrumGroupComponent())
+        self._grid_resolution = grid_resolution
+        note_editor_settings and self.register_component(note_editor_settings)
+        self._note_editor, self._loop_selector, self._big_loop_selector, self._drum_group = self.register_components(
+            NoteEditorComponent(settings_mode=note_editor_settings, clip_creator=clip_creator, grid_resolution=self._grid_resolution),
+            LoopSelectorComponent(clip_creator=clip_creator),
+            LoopSelectorComponent(clip_creator=clip_creator, measure_length=2.0),
+            DrumGroupComponent()
+        )
         self._paginator = NoteEditorPaginator([self._note_editor])
         self._big_loop_selector.set_enabled(False)
         self._big_loop_selector.set_paginator(self._paginator)
@@ -114,13 +120,25 @@ class StepSeqComponent(CompoundComponent):
         self._on_detail_clip_changed.subject = self.song().view
         self._detail_clip = None
         self._playhead = None
-        self._playhead_component = self.register_component(PlayheadComponent(grid_resolution=grid_resolution, paginator=self._paginator, follower=self._loop_selector, notes=chain(*starmap(range, ((92, 100),
-         (84, 92),
-         (76, 84),
-         (68, 76)))), triplet_notes=chain(*starmap(range, ((92, 98),
-         (84, 90),
-         (76, 82),
-         (68, 74))))))
+        self._playhead_component = self.register_component(PlayheadComponent(
+            grid_resolution=grid_resolution,
+            paginator=self._paginator,
+            follower=self._loop_selector,
+            notes=chain(*starmap(
+                range, (
+                    (92, 100),
+                    (84, 92),
+                    (76, 84),
+                    (68, 76)
+                ))),
+            triplet_notes=chain(*starmap(
+                range, (
+                    (92, 98),
+                    (84, 90),
+                    (76, 82),
+                    (68, 74)
+                )))
+            ))
         self._skin = skin
         self._playhead_color = 'NoteEditor.Playhead'
 
@@ -146,7 +164,8 @@ class StepSeqComponent(CompoundComponent):
             self._playhead.velocity = int(self._skin[self._playhead_color])
 
     def set_drum_group_device(self, drum_group_device):
-        raise not drum_group_device or drum_group_device.can_have_drum_pads or AssertionError
+        if not (not drum_group_device or drum_group_device.can_have_drum_pads):
+            raise AssertionError
         self._drum_group.set_drum_group_device(drum_group_device)
         self._on_selected_drum_pad_changed.subject = drum_group_device.view if drum_group_device else None
         self._on_selected_drum_pad_changed()

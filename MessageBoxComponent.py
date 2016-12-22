@@ -211,8 +211,8 @@ class NotificationComponent(CompoundComponent):
         """
         if not (line_index >= 0 and line_index < len(self._display_lines)):
             raise AssertionError
-            display = self._display_lines[line_index]
-            display = line_slice is not None and display.subdisplay[line_slice]
+        display = self._display_lines[line_index]
+        display = line_slice is not None and display.subdisplay[line_slice]
         layer = Layer(priority=MESSAGE_BOX_PRIORITY, display_line1=display)
         return _CallbackControl(self._token_control, partial(self._set_message_box_layout, layer, maybe(partial(align, display.width))))
 

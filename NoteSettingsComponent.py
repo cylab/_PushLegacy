@@ -152,7 +152,8 @@ class NoteSettingsComponent(ControlSurfaceComponent):
         self._add_setting(NoteVelocitySetting(grid_resolution=grid_resolution))
 
     def _add_setting(self, setting):
-        raise len(self._settings) < 8 or AssertionError, 'Cannot show more than 8 settings'
+        if not (len(self._settings) < 8):
+            raise AssertionError, 'Cannot show more than 8 settings'
         self._settings.append(setting)
         self._update_encoders()
         self._top_data_sources = [ DisplayDataSource() for _ in xrange(8 - len(self._settings)) ] + [ s.label_source for s in self._settings ]
@@ -239,7 +240,8 @@ class NoteEditorSettingsComponent(ModesComponent):
 
     def __init__(self, grid_resolution = None, initial_encoder_layer = None, encoder_layer = None, settings_layer = None, *a, **k):
         super(NoteEditorSettingsComponent, self).__init__(*a, **k)
-        raise encoder_layer or AssertionError
+        if not (encoder_layer):
+            raise AssertionError
         self._bottom_data_sources = [ DisplayDataSource() for _ in xrange(8) ]
         self._request_hide = False
         self.settings = self.register_component(NoteSettingsComponent(grid_resolution=grid_resolution, layer=settings_layer))
@@ -286,7 +288,8 @@ class NoteEditorSettingsComponent(ModesComponent):
     selected_setting = forward_property('_settings_modes')('selected_mode')
 
     def add_editor(self, editor):
-        raise editor != None or AssertionError
+        if not (editor != None):
+            raise AssertionError
         self._editors.append(editor)
         self._on_active_steps_changed.add_subject(editor)
         self._on_notes_changed.replace_subjects(self._editors)

@@ -25,7 +25,8 @@ class RgbColor(Color):
         """
         Generate a new shaded RGB from this color.
         """
-        raise shade_level > 0 and shade_level <= 2 or AssertionError
+        if not (shade_level > 0 and shade_level <= 2):
+            raise AssertionError
         shade_factor = 1.0 / 2.0 * (2 - shade_level)
         return RgbColor(self.midi_value + shade_level, [ a * b for a, b in izip(self._rgb_value, repeat(shade_factor)) ])
 
@@ -83,7 +84,8 @@ class AnimatedColor(Color):
         self.channel2 = channel2
 
     def draw(self, interface):
-        raise interface.num_delayed_messages >= 2 or AssertionError
+        if not (interface.num_delayed_messages >= 2):
+            raise AssertionError
         interface.send_value(self.color1.midi_value)
         interface.send_value(self.color2.midi_value, channel=self.channel2)
 
